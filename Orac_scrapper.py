@@ -9,9 +9,9 @@ import io
 # MQTT blok
 MQTT_BROKER = 'localhost'
 
-st.write("""
-SCRAP INPUT ORAC EXTRUSION BE
-""")
+# st.write("""
+# SCRAP INPUT ORAC EXTRUSION BE
+# """)
 
 client = mqtt.Client()
 client.connect(MQTT_BROKER)
@@ -19,12 +19,17 @@ client.connect(MQTT_BROKER)
 LINES = [f'EL{x:02d}' for x in range(1, 11)]
 SCRAP_REASONS = ['line', 'H20', 'scratch', 'other']
 
+logo = Image.open(R"getsitelogo.png")
+
 def line_selecter():
     st.header('SCRAP')
-    line = st.radio('Select your line', LINES)
+    col1, col2 = st.columns(2)
+    line = col1.radio('Select your line', LINES)
+    col2.image(logo)
     amount = st.number_input('Amount', 0, 999,step=1)
-    reason = st.radio('Reason', SCRAP_REASONS)
-    opmerking = st.text_area('Extra opmerking')
+    col1, col2 = st.columns(2)
+    reason = col1.radio('Reason', SCRAP_REASONS)
+    opmerking = col2.text_area('Extra opmerking')
     foto_check = st.checkbox('foto?')
     foto_bytes = NULL
     if foto_check:
@@ -56,7 +61,9 @@ def send_mqtt(topic, payload):
 if type(data_to_send['foto']) != int:
     st.sidebar.image(Image.open(io.BytesIO(data_to_send['foto'])))
 
-
+st.sidebar.write("""
+# Press the button if you are ready
+""")
 send_confirm = st.sidebar.button('SEND MQTT')
 if send_confirm:
     line = data_to_send['line']
