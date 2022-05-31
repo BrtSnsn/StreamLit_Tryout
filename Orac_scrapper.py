@@ -9,9 +9,7 @@ import io
 # MQTT blok
 MQTT_BROKER = 'localhost'
 
-# st.write("""
-# SCRAP INPUT ORAC EXTRUSION BE
-# """)
+st.write(st.session_state)
 
 client = mqtt.Client()
 client.connect(MQTT_BROKER)
@@ -24,7 +22,7 @@ logo = Image.open(R"getsitelogo.png")
 def line_selecter():
     st.header('SCRAP')
     col1, col2 = st.columns(2)
-    line = col1.radio('Select your line', LINES)
+    col1.radio('Select your line', LINES, key='line')
     col2.image(logo)
     amount = st.number_input('Amount', 0, 999,step=1)
     col1, col2 = st.columns(2)
@@ -38,7 +36,7 @@ def line_selecter():
             foto_bytes = foto.getvalue()
             # st.image(Image.open(foto))
     data = {
-        'line' : line,
+        'line' : st.session_state.line,
         'amount': amount,
         'reason': reason,
         'opmerking': opmerking,
@@ -46,6 +44,11 @@ def line_selecter():
         }
     return data
 
+# initialise de keys!!!
+if 'line' in st.session_state.keys():
+    if st.session_state['line'] == 'EL02':
+        st.write('TRUE')
+        st.session_state['line'] = 'EL03'
 data_to_send = line_selecter()
 
 # st.write(pd.DataFrame(data_to_send, index=[' ']))
