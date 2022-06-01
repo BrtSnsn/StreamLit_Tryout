@@ -9,46 +9,60 @@ import io
 # MQTT blok
 MQTT_BROKER = 'localhost'
 
-st.write(st.session_state)
+# st.write(st.session_state)
 
 client = mqtt.Client()
 client.connect(MQTT_BROKER)
 
-LINES = [f'EL{x:02d}' for x in range(1, 11)]
-SCRAP_REASONS = ['line', 'H20', 'scratch', 'other']
+LINES = ['_'] + [f'EL{x:02d}' for x in range(1, 11)]
+SCRAP_REASONS = ['_', 'line', 'H20', 'scratch', 'other']
 
 logo = Image.open(R"getsitelogo.png")
+
+# message_box = st.empty()
+message_box = st.container()
 
 def line_selecter():
     st.header('SCRAP')
     col1, col2 = st.columns(2)
     col1.radio('Select your line', LINES, key='line')
     col2.image(logo)
-    amount = st.number_input('Amount', 0, 999,step=1)
+    st.number_input('Amount', 0, 999,step=1, key='amount')
     col1, col2 = st.columns(2)
-    reason = col1.radio('Reason', SCRAP_REASONS)
-    opmerking = col2.text_area('Extra opmerking')
-    foto_check = st.checkbox('foto?')
+    col1.radio('Reason', SCRAP_REASONS, key='reason')
+    col2.text_area('Extra opmerking', key='extra')
+    st.markdown('***')
+    foto_check = st.checkbox('Optional: Photo', key='foto')
     foto_bytes = NULL
     if foto_check:
-        foto = st.camera_input('hier komt foto')
+        foto = st.camera_input('Take of a picture of the problem')
         if foto is not None:
             foto_bytes = foto.getvalue()
             # st.image(Image.open(foto))
     data = {
         'line' : st.session_state.line,
-        'amount': amount,
-        'reason': reason,
-        'opmerking': opmerking,
+        'amount': st.session_state.amount,
+        'reason': st.session_state.reason,
+        'opmerking': st.session_state.extra,
         'foto': foto_bytes
         }
     return data
 
-# initialise de keys!!!
-if 'line' in st.session_state.keys():
-    if st.session_state['line'] == 'EL02':
-        st.write('TRUE')
-        st.session_state['line'] = 'EL03'
+def reset():
+    # initialise de keys!!!
+    # key_list = [y for y in st.session_state.keys()]
+    # if all(x in key_list for x in ['line', 'amount']) and st.session_state.send == True:
+    # if st.session_state.send == True:
+    if 'reset' in st.session_state.keys():
+        if st.session_state.reset == True:
+            # hier reset ik de selection boxes
+            st.session_state['line'] = '_'
+            st.session_state['amount'] = 0
+            st.session_state['reason'] = '_'
+            st.session_state['extra'] = ''
+            st.session_state['foto'] = False
+
+reset()
 data_to_send = line_selecter()
 
 # st.write(pd.DataFrame(data_to_send, index=[' ']))
@@ -64,14 +78,33 @@ def send_mqtt(topic, payload):
 if type(data_to_send['foto']) != int:
     st.sidebar.image(Image.open(io.BytesIO(data_to_send['foto'])))
 
-st.sidebar.write("""
-# Press the button if you are ready
-""")
-send_confirm = st.sidebar.button('SEND MQTT')
+st.sidebar.write("# Send Message")
+
+send_confirm = st.sidebar.button('SEND MQTT', key='send')
+key_values = [y for y in st.session_state.values()]
+
+
 if send_confirm:
-    line = data_to_send['line']
-    topic = Rf'SCRAP/{line}'
-    send_mqtt(topic, data_to_send)
+    if any(x == '_' for x in key_values):
+        # message_box.write('# Error on  :grey_exclamation:')
+        with message_box:
+            new_title = '''<p style="font-family:sans-serif; color:Red; font-size: 42px;">Error: incomplete data </p>'''
+            message_box.markdown(new_title, unsafe_allow_html=True)
+            message_box.write('Please select line, amount & reason before sending :grey_exclamation:')
+    else:
+        message_box.write('''
+        # Message Send :+1:
+        _Please press reset_
+        ''')
+        line = data_to_send['line']
+        topic = Rf'SCRAP/{line}'
+        send_mqtt(topic, data_to_send)
+
+for i in range(8):
+    st.sidebar.write('\n')
+
+st.sidebar.write('***')
+st.sidebar.button('reset', key='reset')
 
 # # dit is hoe columns werken
 # columns = st.columns(4)
