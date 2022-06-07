@@ -1,0 +1,1 @@
+py -m streamlit run .\Orac_scrapper.py

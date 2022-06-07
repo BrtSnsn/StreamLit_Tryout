@@ -1,20 +1,43 @@
 from asyncio.windows_events import NULL
-from matplotlib.font_manager import json_dump
-import pandas as pd
+from typing import OrderedDict
 import streamlit as st
 import paho.mqtt.client as mqtt
 from PIL import Image
-import io
 import json
-# from streamlit import caching
+from collections import OrderedDict
+import io
+
+# het lukt me niet op de imports goed te krijgen bij het opstarten van een streamlit site
 
 # MQTT blok
-MQTT_BROKER = 'localhost'
+def read_jsonconfig(extension):
+    with open(f'mqtt_config{extension}.json') as jsonfile:
+        return json.load(jsonfile, object_pairs_hook=OrderedDict)
 
-# st.write(st.session_state)
+def config_version():
+    with open('config.ini') as f:
+        line = f.readline()
+        return line
 
-client = mqtt.Client()
-client.connect(MQTT_BROKER)
+# cnf = read_jsonconfig('_oracdev')
+cnf_version = config_version()
+cnf = read_jsonconfig(cnf_version)
+
+client = mqtt.Client(
+    client_id=cnf['client_id'],
+    clean_session=True,
+    userdata=None,
+    protocol=mqtt.MQTTv311,
+    transport="tcp")
+
+if cnf['broker_login'] != "":
+    client.username_pw_set(username=cnf['broker_login'], password=cnf['broker_password'])
+client.connect(
+    host=cnf['broker_ip'], 
+    port=cnf['broker_port'],
+    )
+
+
 
 LINES = ['_'] + [f'EL{x:02d}' for x in range(1, 11)]
 SCRAP_REASONS = ['_', 'line', 'H20', 'scratch', 'other']
@@ -40,7 +63,7 @@ def line_selecter():
         foto = st.camera_input('Take of a picture of the problem')
         if foto is not None:
             foto_bytes = foto.getvalue()
-            # st.image(Image.open(foto))
+
     data = {
         'line' : st.session_state.line,
         'amount': st.session_state.amount,
@@ -48,16 +71,12 @@ def line_selecter():
         'opmerking': st.session_state.extra,
         'foto': 0
         }
-    # print(type(data))
-    # print(data)
+
     t = json.loads(json.dumps(data))
+
     if data['foto'] == 0:
-        # print(t)
-        # print('yes')
-        # print(t['foto'])
         t['foto'] = foto_bytes
 
-    # print(t)
     return t
 
 def reset():
@@ -78,13 +97,9 @@ def reset():
 reset()
 data_to_send = line_selecter()
 
-# st.write(pd.DataFrame(data_to_send, index=[' ']))
-# st.sidebar.write(data_to_send)
-
 # session state gebruiken om kg om te rekenen naar stuks
 # https://docs.streamlit.io/library/api-reference/session-state rond 8:26
 
-# print('fdf')
 def send_mqtt(topic, payload):
     # print(topic)
     client.publish(topic=topic, payload=str(payload), qos=0, retain=True)
@@ -95,10 +110,11 @@ def send_mqtt(topic, payload):
 
 # foto visualiseren in de sidebar
 # print(data_to_send['foto'])
-# if type(data_to_send['foto']) != int:
-#     st.sidebar.image(Image.open(io.BytesIO(data_to_send['foto'])))
+if type(data_to_send['foto']) != int:
+    st.sidebar.image(Image.open(io.BytesIO(data_to_send['foto'])))
 
 st.sidebar.write("# Send Message")
+st.sidebar.write(st.session_state)
 
 send_confirm = st.sidebar.button('SEND MQTT', key='send')
 key_values = [y for y in st.session_state.values()]

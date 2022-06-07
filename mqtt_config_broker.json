@@ -1,0 +1,8 @@
+{"broker_ip": "192.168.150.200",
+ "broker_port": 1883,
+ "broker_login": "scrapper_1",
+ "broker_password": "scrapper_1",
+ "client_id": "Scrapper_Input",
+ "server_cert_fn": "ca-root-cert.crt",
+ "client_cert_fn": "",
+ "client_key_fn": ""}
