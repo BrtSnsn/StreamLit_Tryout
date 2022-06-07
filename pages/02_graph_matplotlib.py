@@ -1,11 +1,11 @@
 import streamlit as st
 from PIL import Image
 
-"""blog streamlit how to build a sreal time live dashboard with streamlit"""
+# """blog streamlit how to build a sreal time live dashboard with streamlit"""
 
 img = Image.open(R"C:\VisualStudioCode\Data_Orac\getsitelogo.png")
 
-st.title('hello_°°SDF')
+st.title('hello__This is a test-page')
 st.image(img, width=200)
 
 # test voor graph
