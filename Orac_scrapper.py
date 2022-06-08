@@ -42,6 +42,12 @@ client.connect(
 LINES = ['_'] + [f'EL{x:02d}' for x in range(1, 11)]
 SCRAP_REASONS = ['_', 'line', 'H20', 'scratch', 'other']
 
+st.set_page_config(
+    page_title="Orac_dashboard",
+    page_icon="logo.ico",
+    layout="wide",
+)
+
 logo = Image.open(R"getsitelogo.png")
 
 # message_box = st.empty()
