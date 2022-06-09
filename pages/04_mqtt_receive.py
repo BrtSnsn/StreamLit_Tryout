@@ -44,6 +44,12 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
+with st.form('dd', clear_on_submit=True):
+    vall = st.text_area('ddd')
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+        print(f'yess {vall}')
+
 client.connect(MQTT_BROKER)
 
 # sg = client.subscribe('TEST', qos=1)
