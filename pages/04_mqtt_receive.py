@@ -1,48 +1,40 @@
-import paho.mqtt.client as mqtt
+import ast
 import streamlit as st
-import json
 from PIL import Image
 import io
-import ast
+from helpers import Mqtt as mqtt
+from helpers import Param
 
-MQTT_BROKER = 'localhost'
+
+# if 'receiver' not in st.session_state:
+#     st.session_state['receiver'] = 0
+# else:
+#     st.session_state['receiver'] += 1
+# st.write(st.session_state['receiver'])
+
+# instance the classes or smth
+globs = Param()
+page_mqtt = mqtt('receiver')
+
 
 msgbox = st.empty()
-# msgbox = st.container()
+
 
 def on_connect(client, userdata, flags, rc):
-    # st.write(client, userdata, flags, rc)
     print(client, userdata, flags, rc)
 
 def on_message(client, userdata, message):
     msgbox.empty()
-    # msg = message
     msg = message.payload.decode()
     try:
-        # print(type(msg))
-        # print(msg)
-        # print(ast.literal_eval(msg))
-        # sj = json.loads(msg.replace("\'", "\""))  # hacky because the bits in the photo are being altered
-        # sj = json.loads(msg)
         rsp = ast.literal_eval(msg)
         msgbox.write(rsp)
-        if type(rsp['foto']) != int:
-            msgbox.image(Image.open(io.BytesIO(rsp['foto'])))
+        # if type(rsp['foto']) != int:
+            # msgbox.image(Image.open(io.BytesIO(rsp['foto'])))
 
     except:
         msgbox.write('error')
-    # print(json.loads(msg))
-    # msgbox.write(type(msg))
-    # msg = json.loads(msg)
-    # print(json.loads(msg))
-    # print(msg)
-    # msgbox.write(msg)
-    # if type(msg['foto']) != int:
-    # st.sidebar.image(Image.open(io.BytesIO(data_to_send['foto'])))
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
 
 with st.form('dd', clear_on_submit=True):
     vall = st.text_area('ddd')
@@ -50,16 +42,13 @@ with st.form('dd', clear_on_submit=True):
     if submitted:
         print(f'yess {vall}')
 
-client.connect(MQTT_BROKER)
+page_mqtt.make_connection()
+page_mqtt.client.on_connect = on_connect
+page_mqtt.client.on_message = on_message
+for each in globs.extr_lines_be:
+    page_mqtt.client.subscribe(f'SCRAP/{each}', qos=1)
 
-# sg = client.subscribe('TEST', qos=1)
-client.subscribe('SCRAP/EL05', qos=1)
-# client.publish('TEST', 'blabla', qos=1, retain=True)
-
-# print(sg)
-# st.write(sg)
-
-# client.loop_start()
-client.loop_forever()
-# while True:
-    # client.loop(timeout=10.0, max_packets=1)
+# page_mqtt.client.loop_forever()
+# manually call the loop, otherwise the client is confused if the webpage gets revisited?
+while True:
+    page_mqtt.client.loop(.1)

@@ -12,7 +12,7 @@ st.set_page_config(
 graph_slot = st.empty()
 
 np.random.seed(1)
-df = pd.DataFrame(np.random.randn(50, 3))
+df = pd.DataFrame(np.random.randn(50, 1))
 
 # job_filter = st.selectbox("Select data", pd.unique(df.columns))
 # df = df.loc[:, job_filter]
