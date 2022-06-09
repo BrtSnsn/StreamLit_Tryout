@@ -57,5 +57,13 @@ def send_mqtt(topic, payload):
     page_mqtt.client.publish(topic=topic, payload=str(payload), qos=1, retain=True)
 
 if but:
-    topic = Rf'SCRAP/EL01'
+    topic = Rf'RPM/EL01'
     send_mqtt(topic, val)
+
+
+if 'key' not in st.session_state:
+    st.session_state['key'] = [0, 1, 2]
+else:
+    st.session_state['key'].append(3)
+
+st.write(st.session_state)
