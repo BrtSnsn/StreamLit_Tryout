@@ -1,1 +1,1 @@
-py -m streamlit run .\Orac_scrapper.py
+python -m streamlit run .\Orac_scrapper.py --server.port 80
