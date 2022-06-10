@@ -1,9 +1,17 @@
+from cgitb import reset
+import re
 import streamlit as st
 from helpers import Mqtt as mqtt
 from helpers import Param
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import ast
+
+# https://discuss.streamlit.io/t/streamlit-script-run-context-gone-with-1-8/23526/4
+from streamlit.scriptrunner.script_run_context import add_script_run_ctx, get_script_run_ctx
+
+stcontext = get_script_run_ctx()
 
 '''
 How to use:
@@ -16,23 +24,26 @@ Go back to dashboard page and press Start loop
 
 the number is nog being read and I try to add it to the sessionstate lists to make it persistent
 Then it blocks...
+
+
+https://discuss.streamlit.io/t/live-plot-from-a-thread/247/2
+https://github.com/streamlit/streamlit/issues/1326
+https://discuss.streamlit.io/t/how-to-run-a-subprocess-programs-using-thread-inside-streamlit/2440
 '''
 
 st.set_page_config(
-    page_title="Dashboard",
-    page_icon="✅",
+    page_title="Bert's Cool Dashboard Concept",
+    page_icon="🎉",
     layout="wide",
+
 )
 
 
 # instance the classes or smth
 globs = Param()
 page_mqtt = mqtt('dashboard')
-page_mqtt.make_connection()
 
 
-for each in globs.extr_lines_be:
-    page_mqtt.client.subscribe(f'RPM/{each}', qos=1)
 
 # dictionairies
 title_dict = {}
@@ -49,13 +60,8 @@ cols = st.columns(len(globs.extr_lines_be))
 for slot, each in enumerate(globs.extr_lines_be):
     title_dict[each] = cols[slot].empty()
     graph_dict[each] = cols[slot].empty()
-    sparkid = f'spark_{each}'
-    if sparkid not in st.session_state:
-        st.session_state[f'spark_{each}'] = [0, 1, 2]
-        print(sparkid)
-        st.session_state[f'spark_{each}'].append(0)
 
-st.sidebar.write(st.session_state)
+st.sidebar.write(st.session_state)  # debug
 
 for slot, each in enumerate(globs.extr_lines_be):
     kv = f'''<p 
@@ -69,42 +75,65 @@ for slot, each in enumerate(globs.extr_lines_be):
     ">{each}</p>'''
     title_dict[each].markdown(kv, unsafe_allow_html=True)
 
-
-    np.random.seed(1)
-    # sparkline = pd.DataFrame(np.random.randn(0, 1), columns=[each])
-    df = pd.DataFrame(st.session_state[f'spark_{each}'], columns=[each])
+for slot, each in enumerate(globs.extr_lines_be):
+    sparkline = pd.DataFrame([], columns=[each])
     fig, ax = plt.subplots()
     
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
     ax.get_xaxis().set_visible(False)
-    ax.plot(df)
+    ax.plot(sparkline)
 
-    # graph_dict[each].pyplot(fig)  # dit gebruiken liefst
-    cols[slot].pyplot(fig)  # dit gebruiken als ik merk dat de containers niet meer updaten wanneer streamlit draait
+    graph_dict[each].pyplot(fig)  # dit gebruiken liefst
 
 # testbutton to trigger mqtt message (retained)
-butstart = st.button('start loop')
-if butstart:
-    page_mqtt.client.loop_start()
-else:
-    page_mqtt.client.loop_stop()
+# butstart = st.button('start loop')
+# if butstart:
+#     page_mqtt.client.loop_start()
+# else:
+#     page_mqtt.client.loop_stop()
 
+def on_connect(client, userdata, flags, rc):
+    print(client, userdata, flags, rc)
 
-
-@st.experimental_memo
-def on_message(client, userdata, message):
+def call_sparkline(client, userdata, message):
     payload = str(message.payload.decode("utf-8"))
     topic = str(message.topic)
     print(f'>> Message: {topic} --> {payload}')
 
-    # add value to the df of the correct line
-    linemessage = topic.split(sep='/')
-    print(linemessage[1])
-    st.write(st.session_state)
-    print(st.session_state)
-    # st.session_state[f'spark_{linemessage[1]}'].append(payload)
-    st.write(st.session_state)
+    linemessage = re.search(R"EL(\d{2})", topic).group()
+    print(linemessage)
+    x = ast.literal_eval(payload)
+    # print(x)
+    result = [n for n in x]
+    # print(result)
+    # print(type(result))
 
-page_mqtt.client.on_message = on_message
+    sparkline = pd.DataFrame(result, columns=['_'])
+    fig, ax = plt.subplots()
+    
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.get_xaxis().set_visible(False)
+    ax.plot(sparkline)
+    
+    graph_dict[linemessage].pyplot(fig)  # dit gebruiken liefst
+    plt.close(fig)  # anders warning over memory
+    
+
+page_mqtt.make_connection()
+page_mqtt.client.on_connect = on_connect
+# page_mqtt.client.on_disconnect = on_disconnect  # TODO: client dupe eruithalen
+page_mqtt.client.on_message = call_sparkline
+
+# subscribe
+for eachline in globs.extr_lines_be:  # sparkline subscribe
+    topic_temp = fR'orac/BEL/OST/PROD/EXTR/{eachline}/DASHB/SPARK'
+    print('subscribed', topic_temp)
+    page_mqtt.client.subscribe(topic_temp, qos=1)
+
+
+
+page_mqtt.client.loop_forever()

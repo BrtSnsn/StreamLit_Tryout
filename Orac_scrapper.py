@@ -67,3 +67,7 @@ else:
     st.session_state['key'].append(3)
 
 st.write(st.session_state)
+
+# exitbutton = st.button('press to stop code')
+# if exitbutton:
+#     st.stop()
