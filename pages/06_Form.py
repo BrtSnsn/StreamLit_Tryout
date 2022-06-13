@@ -42,7 +42,7 @@ with st.form("my_form", clear_on_submit=True):
     col1, col2 = st.columns(2)
     col1.radio('Select the line:', globs.LINES, key='line')
     col2.image(globs.logo, width=250)
-    st.number_input('Amount', 0, 999,step=1, key='amount')
+    st.number_input('Amount', 0, 999, step=1, key='amount')
     col1, col2 = st.columns(2)
     col1.radio('Reason', globs.SCRAP_REASONS, key='reason')
     col2.text_area('Extra opmerking', key='extra')

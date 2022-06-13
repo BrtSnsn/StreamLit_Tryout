@@ -13,6 +13,40 @@ class Param():
         self.logo = Image.open(R"Icons/getsitelogo.png")
         self.oracicon = Image.open(R"Icons/logo.ico")
         self.hot = Image.open(R"Icons/Burning.png")
+
+        self.status_text = {
+            '0': '_',
+            '1': 'Opwarmen',
+            '2': 'Startup',
+            '3': 'Production',
+
+            '5': 'Heropstart',
+
+            '10': 'Cold Die',
+            '20': 'Hot Die',
+
+            '50': 'Wissel Opbouw', 
+            '51': 'Wissel Afbouw',
+
+            '99': 'Error'
+        }
+
+        self.status_color = {
+            '0': '#e8e8e8',
+            '1': '#e0e000',
+            '2': '#b8c282',
+            '3': '#00a80b',
+
+            '5': '#b8c282',
+
+            '10': '#5279fa',
+            '20': '#a952fa',
+
+            '50': '#e09900', 
+            '51': '#e09900',
+
+            '99': 'Error'
+        }
         pass
 
 
