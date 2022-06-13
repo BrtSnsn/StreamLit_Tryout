@@ -9,7 +9,10 @@ class Param():
         self.extr_lines_be = [f'EL{x:02d}' for x in range(1, 11)]
         self.LINES = ['_'] + self.extr_lines_be
         self.SCRAP_REASONS = ['_', 'line', 'H20', 'scratch', 'other']
-        self.logo = Image.open(R"getsitelogo.png")
+
+        self.logo = Image.open(R"Icons/getsitelogo.png")
+        self.oracicon = Image.open(R"Icons/logo.ico")
+        self.hot = Image.open(R"Icons/Burning.png")
         pass
 
 

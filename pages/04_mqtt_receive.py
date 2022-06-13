@@ -18,6 +18,8 @@ page_mqtt = mqtt('receiver')
 
 
 msgbox = st.empty()
+msgbox2 = st.empty()
+msgbox3 = st.empty()
 
 
 def on_connect(client, userdata, flags, rc):
@@ -28,9 +30,10 @@ def on_message(client, userdata, message):
     msg = message.payload.decode()
     try:
         rsp = ast.literal_eval(msg)
-        msgbox.write(rsp)
-        # if type(rsp['foto']) != int:
-            # msgbox.image(Image.open(io.BytesIO(rsp['foto'])))
+        msgbox.write(rsp['line'])
+        if type(rsp['foto']) != int:
+            msgbox2.image(Image.open(io.BytesIO(rsp['foto'])))
+        msgbox3.write(rsp)
 
     except:
         msgbox.write('error')

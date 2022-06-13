@@ -62,9 +62,9 @@ if but:
 
 
 if 'key' not in st.session_state:
-    st.session_state['key'] = [0, 1, 2]
+    st.session_state['key'] = 0
 else:
-    st.session_state['key'].append(3)
+    st.session_state['key'] += 1
 
 st.write(st.session_state)
 
