@@ -1,55 +1,42 @@
 version: '3'
 services:
   python:
-    container_name: python
-    build: .
+    container_name: python_dashboard
+    build: ./streamlit_app
+    depends_on:
+        - db
     ports:
       - 80:80
       - 8501:8501
-    # tty: true
-      # # - 1668:1668
-      # - 8883:8883
-    # networks:
-    #   - python_network
-    # # volumes:
-    #   - C:/docker/orac/mosquitto/mosquitto-data:/mosquitto/data
-    #   - C:/docker/orac/mosquitto/mosquitto-logs:/mosquitto/logs
-    #   - C:/docker/orac/mosquitto/mosquitto-conf:/mosquitto/config
-    # restart: unless-stopped
+    networks:
+      - docker_network
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    ports:
+      - 1883:1883
+      - 8883:8883
+    networks:
+      - docker_network
+    volumes:
+      - C:/docker/orac/mosquitto/mosquitto-data:/mosquitto/data
+      - C:/docker/orac/mosquitto/mosquitto-logs:/mosquitto/logs
+      - C:/docker/orac/mosquitto/mosquitto-conf:/mosquitto/config
+    restart: unless-stopped
+
+  db:
+    build: ./database
+    ports:
+      - 5432:5432
+    networks:
+      - docker_network
+    # volumes: # do keep for persistent database data
+    #   - ./data:/var/lib/postgresql/data
 
 
-# networks:
-#   python_network:
-    # driver: bridge
+networks:
+  docker_network:
+    driver: bridge
 
-
-
-
-
-# version: '3'
-
-# services:
-
-#   python:
-#     image: python
-#     build:
-#         context: .
-#         dockerfile: Dockerfile
-#     tty: true
-
-#   postgres:
-#     image: postgres:latest
-#     build:
-#       context: .
-#     environment:
-#       POSTGRES_PASSWORD: example
-#     ports:
-#       - "5435:5432"
-#     networks:
-#       - postgres
-#     tty: true
-
-# networks:
-#   postgres:
-#     #  tty: true
-
+    

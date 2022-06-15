@@ -5,6 +5,13 @@ from datetime import datetime, time, timedelta
 from helpers import Mqtt as mqtt
 from helpers import Param
 
+st.set_page_config(
+    page_title="Bert's Cool Dashboard Concept",
+    page_icon="🎉",
+    layout="centered",
+
+)
+
 # instance the classes or smth
 globs = Param()
 page_mqtt = mqtt('form_supplier')

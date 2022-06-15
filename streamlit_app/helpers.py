@@ -10,9 +10,9 @@ class Param():
         self.LINES = ['_'] + self.extr_lines_be
         self.SCRAP_REASONS = ['_', 'line', 'H20', 'scratch', 'other']
 
-        self.logo = Image.open(R"Icons/getsitelogo.png")
-        self.oracicon = Image.open(R"Icons/logo.ico")
-        self.hot = Image.open(R"Icons/Burning.png")
+        self.logo = Image.open(R"streamlit_app/Icons/getsitelogo.png")
+        self.oracicon = Image.open(R"streamlit_app/Icons/logo.ico")
+        self.hot = Image.open(R"streamlit_app/Icons/Burning.png")
 
         self.status_text = {
             '0': '_',
@@ -68,12 +68,12 @@ class Mqtt():
 
 
     def read_jsonconfig(self, extension):
-            with open(f'mqtt_config{extension}.json') as jsonfile:
+            with open(f'streamlit_app/mqtt_config{extension}.json') as jsonfile:
                 return json.load(jsonfile, object_pairs_hook=OrderedDict)
 
 
     def config_version(self):
-        with open('config.ini') as f:
+        with open('streamlit_app/config.ini') as f:
             line = f.readline()
             return line
 

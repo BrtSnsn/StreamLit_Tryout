@@ -3,6 +3,13 @@ from datetime import datetime
 from helpers import Param
 from helpers import Mqtt as mqtt
 
+st.set_page_config(
+    page_title="Bert's Cool Dashboard Concept",
+    page_icon="🎉",
+    layout="wide",
+
+)
+
 st.write('hello ☜(ﾟヮﾟ☜)')
 
 globs = Param()

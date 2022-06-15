@@ -113,9 +113,9 @@ def image_gen(path, height):
     return img
 
 # call the background image functions etc
-image_link_1 = R'Icons\Burning.png'
-image_link_2 = R'Icons\getsitelogo.png'
-image_link_3 = R'Icons\background.png'
+image_link_1 = R'streamlit_app/Icons\Burning.png'
+image_link_2 = R'streamlit_app/Icons\getsitelogo.png'
+image_link_3 = R'streamlit_app/Icons\background.png'
 
 
 sidebar_bg()
@@ -183,7 +183,7 @@ for slot, each in enumerate(globs.extr_lines_be):
     ax.plot(sparkline)
 
     # mstatus_dict[each].write('_')
-    image_path = R'Icons/Quickness.png'
+    image_path = R'streamlit_app/Icons/Quickness.png'
     mstatus_icon_dict[each].markdown(image_gen(image_path, 50), unsafe_allow_html=True)
     graph_dict[each].pyplot(fig, transparent=True)
     plt.close(fig)

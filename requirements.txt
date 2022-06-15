@@ -5,3 +5,5 @@ pillow
 numpy
 matplotlib
 plotly
+psycopg2
+sqlalchemy
