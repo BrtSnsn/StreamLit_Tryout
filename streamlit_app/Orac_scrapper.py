@@ -20,7 +20,7 @@ select = st.selectbox('LINE', globs.extr_lines_be)
 val = st.text_input('geef iets in')
 but = st.button('send')
 client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S')
-page_mqtt = mqtt(datetime.now().strftime('%d/%b/%Y %H:%M:%S'))
+page_mqtt = mqtt(f'{client_id}_main')
 page_mqtt.make_connection()
 
 def send_mqtt(topic, payload):
