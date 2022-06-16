@@ -1,0 +1,49 @@
+# syntax=docker/dockerfile:1
+FROM python:3.10-bullseye
+ENV TZ=Europe/Paris
+WORKDIR /streamlit_app
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+EXPOSE 80
+EXPOSE 8501
+
+# COPY Orac_Dashboard.py Orac_Dashboard.py
+COPY Orac_scrapper.py Orac_scrapper.py
+COPY . /streamlit_app/
+# COPY . .
+
+RUN mkdir ~/.streamlit
+
+RUN cp .streamlit/config.toml ~/.streamlit/config.toml
+RUN cp .streamlit/credentials.toml ~/.streamlit/credentials.toml
+
+ENTRYPOINT ["streamlit", "run"]
+CMD ["Orac_scrapper.py"]
+
+
+
+# https://www.section.io/engineering-education/how-to-deploy-streamlit-app-with-docker/
+# https://docs.streamlit.io/library/advanced-features/configuration
+# http://localhost:8501
+
+
+# https://localhost:80
+
+# de URL geprint zijn de url's geprint door de docker
+
+# docker config files
+# https://github.com/MarcSkovMadsen/awesome-streamlit/blob/master/devops/docker/Dockerfile.prod
+
+# locaal netwerk? -> config file aanpassen 127.0.0.1 vervangen door:
+# host.docker.internal
+
+
+# SSL cert maken (!!!)
+# https://www.sslcertificaten.nl/support/OpenSSL/OpenSSL_-_Aanmaken_self-signed_certificaat
+# Als domein heb ik de naam van mijn pc gebruikt.
+# Command line -> type hostname voor de naam van je pc.
+# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout hostname.key -out hostname.crt
+
+# https://dev.to/stefanopassador/docker-compose-with-python-and-posgresql-33kk

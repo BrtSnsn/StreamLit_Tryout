@@ -1,1 +1,1 @@
-python -m streamlit run .\Orac_scrapper.py --server.port 80
+python -m streamlit run .\streamlit_app\Orac_scrapper.py --server.port 80  --runner.magicEnabled FALSE
