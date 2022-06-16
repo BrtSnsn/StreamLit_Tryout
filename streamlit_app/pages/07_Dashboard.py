@@ -113,13 +113,13 @@ def image_gen(path, height):
     return img
 
 # call the background image functions etc
-image_link_1 = R'streamlit_app/Icons\Burning.png'
-image_link_2 = R'streamlit_app/Icons\getsitelogo.png'
-image_link_3 = R'streamlit_app/Icons\background.png'
+# image_link_1 = R'streamlit_app/Icons\Burning.png'
+# image_link_2 = R'streamlit_app/Icons\getsitelogo.png'
+# image_link_3 = R'streamlit_app/Icons\background.png'
 
 
 sidebar_bg()
-set_bg_hack_url(image_link_3)
+set_bg_hack_url(globs.bg)
 
 
 # fill columns based on the dict
@@ -183,7 +183,7 @@ for slot, each in enumerate(globs.extr_lines_be):
     ax.plot(sparkline)
 
     # mstatus_dict[each].write('_')
-    image_path = R'streamlit_app/Icons/Quickness.png'
+    image_path = globs.quick
     mstatus_icon_dict[each].markdown(image_gen(image_path, 50), unsafe_allow_html=True)
     graph_dict[each].pyplot(fig, transparent=True)
     plt.close(fig)
