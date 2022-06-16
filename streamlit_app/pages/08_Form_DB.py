@@ -7,7 +7,7 @@ from helpers import Mqtt as mqtt
 from helpers import Param
 from sqlalchemy import create_engine
 from database_files.config import db_string
-from database_files.models import Scrap, Base
+from database_files.models import Scrap
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from contextlib import contextmanager
@@ -45,7 +45,6 @@ Session = sessionmaker(bind=engine)
 
 
 def send_mqtt(topic, payload):
-    print(topic, payload)
     page_mqtt.client.publish(topic=topic, payload=str(payload), qos=1, retain=True)
 
 
@@ -150,6 +149,5 @@ with st.expander("Previous inputs"):
                 # filtersel = s.query(Scrap).filter(Scrap.timestamp > past_time).all()  # other method
 
     except Exception:
-        Base.metadata.create_all(engine)
         pass
 
