@@ -3,6 +3,14 @@ from collections import OrderedDict
 import paho.mqtt.client as mqtt
 from PIL import Image
 
+docker = False
+# docker = True
+
+if not docker:
+    local_string = R"streamlit_app/"
+else:
+    local_string = ""
+
 # Global parameters that will be used in all pages
 class Param():
     def __init__(self):
@@ -10,9 +18,9 @@ class Param():
         self.LINES = ['_'] + self.extr_lines_be
         self.SCRAP_REASONS = ['_', 'line', 'H20', 'scratch', 'other']
 
-        self.logo = Image.open(R"streamlit_app/Icons/getsitelogo.png")
-        self.oracicon = Image.open(R"streamlit_app/Icons/logo.ico")
-        self.hot = Image.open(R"streamlit_app/Icons/Burning.png")
+        self.logo = Image.open(Rf"{local_string}Icons/getsitelogo.png")
+        self.oracicon = Image.open(Rf"{local_string}Icons/logo.ico")
+        self.hot = Image.open(Rf"{local_string}Icons/Burning.png")
 
         self.status_text = {
             '0': '_',
@@ -68,12 +76,12 @@ class Mqtt():
 
 
     def read_jsonconfig(self, extension):
-            with open(f'streamlit_app/mqtt_config{extension}.json') as jsonfile:
+            with open(Rf"{local_string}mqtt_config{extension}.json") as jsonfile:
                 return json.load(jsonfile, object_pairs_hook=OrderedDict)
 
 
     def config_version(self):
-        with open('streamlit_app/config.ini') as f:
+        with open(Rf"{local_string}config.ini") as f:
             line = f.readline()
             return line
 

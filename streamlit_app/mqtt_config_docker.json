@@ -1,0 +1,5 @@
+{"broker_ip": "host.docker.internal",
+ "broker_port": 1883,
+ "broker_login": "",
+ "broker_password": "",
+ "client_id": "test"}

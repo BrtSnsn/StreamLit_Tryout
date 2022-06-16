@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Text
 
 Base = declarative_base()
 
@@ -22,7 +22,7 @@ class Scrap(Base):
     reason = Column(String)
     opmerking = Column(String)
     timestamp = Column(DateTime)
-    foto = Column(String)
+    foto = Column(Text)
     
     def __repr__(self):
         return f"<orac_scrap_be({self.id},line={self.line}, amount={self.amount}, reason={self.reason}, opmerking={self.opmerking})>"

@@ -7,7 +7,7 @@ from helpers import Mqtt as mqtt
 from helpers import Param
 from sqlalchemy import create_engine
 from database_files.config import db_string
-from database_files.models import Scrap
+from database_files.models import Scrap, Base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from contextlib import contextmanager
@@ -45,6 +45,7 @@ Session = sessionmaker(bind=engine)
 
 
 def send_mqtt(topic, payload):
+    print(topic, payload)
     page_mqtt.client.publish(topic=topic, payload=str(payload), qos=1, retain=True)
 
 
@@ -112,7 +113,7 @@ with st.form("my_form", clear_on_submit=True):
         if line in globs.extr_lines_be:
             now = datetime.now()
             now.strftime('%d/%m/%Y %H:%M:%S')
-            send_mqtt(topic, t)
+            send_mqtt(topic, t)  # een foto wil hij niet altijd doorsturen (misschien iets met de json die fout loopt?)
 
             timestamp = datetime.combine(
                 st.session_state.dateselect, st.session_state.timeselect
@@ -133,18 +134,22 @@ with st.form("my_form", clear_on_submit=True):
                 s.commit()
 
 current_time = datetime.now()
-past_time = current_time - timedelta(seconds=10)
+past_time = current_time - timedelta(minutes=10)
 
 
 
 with st.expander("Previous inputs"):
     st.write('hello')
-    try:
-        # st.write(pd.read_sql_query('select * from orac_scrap_be', con=engine))
-        with session_scope() as s:
-            filtersel = s.query(Scrap).filter(Scrap.timestamp > past_time).all()
-            s.close()
-        st.write(filtersel)
-    except:
+    refresh = st.button('press to refresh')
+    try:            
+        if refresh:
+            with session_scope() as s:
+                qry = s.query(Scrap).filter(Scrap.timestamp > past_time)
+                st.write(pd.read_sql(qry.statement, con=engine))
+                # st.write(pd.read_sql_query('select * from orac_scrap_be', con=engine))  # other method
+                # filtersel = s.query(Scrap).filter(Scrap.timestamp > past_time).all()  # other method
+
+    except Exception:
+        Base.metadata.create_all(engine)
         pass
 

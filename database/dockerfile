@@ -1,4 +1,6 @@
 FROM postgres:latest
+ENV TZ=Europe/Paris
+
 
 EXPOSE 5432
 

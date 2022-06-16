@@ -1,7 +1,7 @@
 version: '3'
 services:
   python:
-    container_name: python_dashboard
+    container_name: python_dashboard_
     build: ./streamlit_app
     depends_on:
         - db
@@ -13,7 +13,9 @@ services:
 
   mosquitto:
     image: eclipse-mosquitto:latest
-    container_name: mosquitto
+    container_name: mosquitto_
+    environment:
+      - TZ=Europe/Paris
     ports:
       - 1883:1883
       - 8883:8883
@@ -26,6 +28,7 @@ services:
     restart: unless-stopped
 
   db:
+    container_name: postgres_db_
     build: ./database
     ports:
       - 5432:5432

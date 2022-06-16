@@ -4,7 +4,6 @@ from models import Base, Bookz
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from contextlib import contextmanager
-import pandas as pd
 
 @contextmanager
 def session_scope():
@@ -50,5 +49,5 @@ if __name__ == '__main__':
     # a = pd.read_sql_query('select * from books', con=engine)
 
     create_database()
-    a = pd.read_sql_query('select * from orac_scrap_be', con=engine)
-    print(a)
+    # a = pd.read_sql_query('select * from orac_scrap_be', con=engine)
+    # print(a)
