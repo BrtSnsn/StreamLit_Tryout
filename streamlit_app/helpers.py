@@ -3,8 +3,8 @@ from collections import OrderedDict
 import paho.mqtt.client as mqtt
 from PIL import Image
 
-docker = False
-# docker = True
+# docker = False
+docker = True
 
 if not docker:
     local_string = R"streamlit_app/"
@@ -38,6 +38,8 @@ class Param():
 
             '99': 'Error'
         }
+
+        self.inv_status_text = {v: k for k, v in self.status_text.items()}
 
         self.status_color = {
             '0': '#e8e8e8',
