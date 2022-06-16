@@ -23,7 +23,7 @@ st.set_page_config(
 # instance the classes or smth
 globs = Param()
 client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S')
-page_mqtt = mqtt(datetime.now().strftime('%d/%b/%Y %H:%M:%S'))
+page_mqtt = mqtt(f'{client_id}_FormDB')
 st.write(f'mqtt client_id: {client_id}')
 page_mqtt.make_connection()
 

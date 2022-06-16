@@ -34,8 +34,8 @@ services:
       - 5432:5432
     networks:
       - docker_network
-    # volumes: # do keep for persistent database data
-    #   - ./data:/var/lib/postgresql/data
+    volumes: # do keep for persistent database data
+      - C:\docker\local_postgres/data:/var/lib/postgresql/data
 
 
 networks:
