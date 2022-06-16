@@ -39,6 +39,8 @@ class Param():
             '99': 'Error'
         }
 
+        self.inv_status_text = {v: k for k, v in self.status_text.items()}
+
         self.status_color = {
             '0': '#e8e8e8',
             '1': '#e0e000',

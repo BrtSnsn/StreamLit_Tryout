@@ -13,23 +13,24 @@ st.set_page_config(
 st.write('hello ☜(ﾟヮﾟ☜)')
 
 globs = Param()
-
-
-select = st.selectbox('LINE', globs.extr_lines_be)
-
-val = st.text_input('geef iets in')
-but = st.button('send')
 client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S')
 page_mqtt = mqtt(f'{client_id}_main')
 page_mqtt.make_connection()
+
+select = st.selectbox('LINE', globs.extr_lines_be)
+# val = st.text_input('geef iets in')
+val = st.selectbox('Status', globs.inv_status_text.keys())
+but = st.button('send')
+
 
 def send_mqtt(topic, payload):
     page_mqtt.client.publish(topic=topic, payload=str(payload), qos=1, retain=True)
 
 if but:
-    if select:
+    if select and val:
+        payload = globs.inv_status_text[val]
         topic = Rf'orac/BEL/OST/PROD/EXTR/{select}/DASHB/PSTATUS'
-        send_mqtt(topic, val)
+        send_mqtt(topic, payload=payload)
 
 
 if 'key' not in st.session_state:
@@ -39,7 +40,7 @@ else:
 
 st.write(st.session_state)
 
-st.radio('sdf', [x for x in range(1,100)], horizontal=True)
+st.radio('multiple horizontal radiobutton', [x for x in range(1,100)], horizontal=True)
 
 # exitbutton = st.button('press to stop code')
 # if exitbutton:
