@@ -22,6 +22,9 @@ class Param():
         self.oracicon = Image.open(Rf"{local_string}Icons/logo.ico")
         self.hot = Image.open(Rf"{local_string}Icons/Burning.png")
 
+        self.bg = Rf"{local_string}Icons/background.png"
+        self.quick = Rf"{local_string}Icons/Quickness.png"
+
         self.status_text = {
             '0': '_',
             '1': 'Opwarmen',
