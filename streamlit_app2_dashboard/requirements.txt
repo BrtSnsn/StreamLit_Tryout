@@ -1,0 +1,7 @@
+pandas
+streamlit
+paho-mqtt
+pillow
+numpy
+matplotlib
+plotly

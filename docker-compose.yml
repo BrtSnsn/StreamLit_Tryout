@@ -1,19 +1,30 @@
 version: '3'
 services:
-  python:
-    container_name: python_dashboard_
+  python_main:
+    container_name: python_main
     build: ./streamlit_app
     depends_on:
         - db
     ports:
-      - 80:80
+      # - 80:80
       - 8501:8501
+    networks:
+      - docker_network
+
+  python_dash:
+    container_name: python_dash
+    build: ./streamlit_app2_dashboard
+    depends_on:
+        - mosquitto
+    ports:
+      # - 80:80
+      - 8502:8502
     networks:
       - docker_network
 
   mosquitto:
     image: eclipse-mosquitto:latest
-    container_name: mosquitto_
+    container_name: mosquitto_mqttbroker
     environment:
       - TZ=Europe/Paris
     ports:
@@ -34,9 +45,21 @@ services:
       - 5432:5432
     networks:
       - docker_network
-    volumes: # do keep for persistent database data
+    volumes:
       - C:\docker\local_postgres/data:/var/lib/postgresql/data
 
+  influxdbv2:
+    image: influxdb:2.2.0
+    container_name: influxdbv2
+    ports:
+      - 8086:8086
+    networks:
+      - docker_network
+    environment:
+      - INFLUXD_QUERY_CONCURRENCY=20
+    volumes:
+      - C:/docker/orac/influxdbv2/data:/var/lib/influxdb2
+#      - C:/docker/orac/influxdbv2/config:/etc/influxdb2
 
 networks:
   docker_network:

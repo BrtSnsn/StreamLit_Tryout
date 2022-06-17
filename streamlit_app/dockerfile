@@ -6,7 +6,7 @@ WORKDIR /streamlit_app
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-EXPOSE 80
+# EXPOSE 80
 EXPOSE 8501
 
 # COPY Orac_Dashboard.py Orac_Dashboard.py
