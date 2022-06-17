@@ -21,7 +21,8 @@ class Scrap(Base):
     amount = Column(Integer)
     reason = Column(String)
     opmerking = Column(String)
-    timestamp = Column(DateTime)
+    timestamp_scrap = Column(DateTime)
+    timestamp_input = Column(DateTime)
     foto = Column(Text)
     
     def __repr__(self):

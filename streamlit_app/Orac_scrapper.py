@@ -13,8 +13,8 @@ st.set_page_config(
 st.write('hello ☜(ﾟヮﾟ☜)')
 
 globs = Param()
-client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S')
-page_mqtt = mqtt(f'{client_id}_main')
+client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S') + '_main'
+page_mqtt = mqtt(f'{client_id}')
 page_mqtt.make_connection()
 
 select = st.selectbox('LINE', globs.extr_lines_be)

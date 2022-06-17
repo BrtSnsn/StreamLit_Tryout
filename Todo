@@ -3,3 +3,6 @@ Staat dockerignore op de juiste plaats?
 als de data niet persistent is, hoe initieer ik dan een "niet" bestaande database zonder iets kapot te maken?
 
 URL van de streamlit site staat nog niet vast, hoe fix ik dit?
+
+ISSUE:
+└ Form DB zend niet altijd de foto over de MQTT, dit is op zich niet zo erg omdat ik via een postgresql database werk. 

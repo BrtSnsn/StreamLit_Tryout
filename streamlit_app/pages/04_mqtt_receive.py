@@ -20,6 +20,7 @@ page_mqtt = mqtt('receiver')
 msgbox = st.empty()
 msgbox2 = st.empty()
 msgbox3 = st.empty()
+msgbox4 = st.empty()
 
 
 def on_connect(client, userdata, flags, rc):
@@ -29,14 +30,16 @@ def on_message(client, userdata, message):
     msgbox.empty()
     msg = message.payload.decode()
     try:
+        msgbox.write('receive go')
         rsp = ast.literal_eval(msg)
         msgbox.write(rsp['line'])
-        if type(rsp['foto']) != int:
+        if rsp['foto'] != str(0):
             msgbox2.image(Image.open(io.BytesIO(rsp['foto'])))
         msgbox3.write(rsp)
+        msgbox4.write('succes')
 
     except:
-        msgbox.write('error')
+        msgbox4.write('error')
 
 
 with st.form('dd', clear_on_submit=True):

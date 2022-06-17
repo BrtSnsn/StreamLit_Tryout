@@ -22,8 +22,8 @@ st.set_page_config(
 
 # instance the classes or smth
 globs = Param()
-client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S')
-page_mqtt = mqtt(f'{client_id}_FormDB')
+client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S') + '_FormDB'
+page_mqtt = mqtt(f'{client_id}')
 st.write(f'mqtt client_id: {client_id}')
 page_mqtt.make_connection()
 
@@ -117,14 +117,14 @@ with st.form("my_form", clear_on_submit=True):
             timestamp = datetime.combine(
                 st.session_state.dateselect, st.session_state.timeselect
             )
-            st.write(timestamp)
             
             scrap = Scrap(
                 line=t['line'],
                 amount=t['amount'],
                 reason=t['reason'],
                 opmerking=t['opmerking'],
-                timestamp=timestamp,
+                timestamp_scrap=timestamp,
+                timestamp_input=datetime.now(),
                 foto=t['foto'],
             )
 
@@ -132,21 +132,18 @@ with st.form("my_form", clear_on_submit=True):
                 s.add(scrap)
                 s.commit()
 
-current_time = datetime.now()
-past_time = current_time - timedelta(minutes=10)
+lookback_window = datetime.now() - timedelta(hours=8)
 
-
-
-with st.expander("Previous inputs"):
-    st.write('hello')
+with st.expander("Previous inputs - last 10min"):
     refresh = st.button('press to refresh')
     try:            
         if refresh:
             with session_scope() as s:
-                qry = s.query(Scrap).filter(Scrap.timestamp > past_time)
-                st.write(pd.read_sql(qry.statement, con=engine))
+                qry = s.query(Scrap).filter(Scrap.timestamp_input > lookback_window)
+                a = pd.read_sql(qry.statement, con=engine)
+                st.dataframe(a)
                 # st.write(pd.read_sql_query('select * from orac_scrap_be', con=engine))  # other method
-                # filtersel = s.query(Scrap).filter(Scrap.timestamp > past_time).all()  # other method
+                # filtersel = s.query(Scrap).filter(Scrap.timestamp > lookback_window).all()  # other method
 
     except Exception:
         pass
