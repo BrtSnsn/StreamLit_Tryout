@@ -13,7 +13,7 @@ st.set_page_config(
 
 config = {'displayModeBar': True}
 
-st.sidebar.write(st.session_state)
+# st.sidebar.write(st.session_state)
 timereminder_slot = st.empty()
 graph_slot = st.empty()
 selector_slot = st.empty()
