@@ -1,6 +1,5 @@
 Staat dockerignore op de juiste plaats?
+    └ Hoe werkt dit?
 als de data niet persistent is, hoe initieer ik dan een "niet" bestaande database zonder iets kapot te maken?
 
 URL van de streamlit site staat nog niet vast, hoe fix ik dit?
-
-split python programs (different url's)
