@@ -8,33 +8,13 @@ import ast
 from datetime import datetime
 import base64
 
-# https://discuss.streamlit.io/t/streamlit-script-run-context-gone-with-1-8/23526/4
-# from streamlit.scriptrunner.script_run_context import add_script_run_ctx, get_script_run_ctx
-# stcontext = get_script_run_ctx()
-
-'''
-How to use:
-Docker -> run mosquitto locally (anonymous true etc)
-Run the batch file
-Go to main page (Orac Scrapper) insert a number e.g. 5 and press send
-the number is nog in your mqtt broker
-
-Go back to dashboard page and press Start loop
-
-the number is nog being read and I try to add it to the sessionstate lists to make it persistent
-Then it blocks...
-
-
-https://discuss.streamlit.io/t/live-plot-from-a-thread/247/2
-https://github.com/streamlit/streamlit/issues/1326
-https://discuss.streamlit.io/t/how-to-run-a-subprocess-programs-using-thread-inside-streamlit/2440
-'''
 
 st.set_page_config(
     page_title="Bert's Cool Dashboard Concept",
     page_icon="🎉",
     layout="wide",
     initial_sidebar_state='collapsed'
+
 )
 
 
@@ -61,7 +41,6 @@ pstatus_dict = {}
 # global data
 status_dict_text = dict(globs.status_text)
 status_dict_color = dict(globs.status_color)
-# print(status_dict_color)
 
 # make columns
 cols = st.columns(len(globs.extr_lines_be) + 1)
