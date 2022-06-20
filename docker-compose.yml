@@ -54,7 +54,7 @@ services:
 
   influxdbv2:
     image: influxdb:2.2.0
-    container_name: influxdbv2
+    container_name: influxdbv2_
     ports:
       - 8086:8086
     networks:
