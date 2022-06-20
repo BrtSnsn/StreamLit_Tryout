@@ -8,15 +8,17 @@ class InfluxQuery:
         start: datetime formatn .isoformat('T') + 'Z'
         stop: datetime format .isoformat('T') + 'Z'
         """
-        self.org = "testorac"
-        token = "FfFelQxbFycdHBx430FMZ1lB13mUtxUCau7Cu-LF-dRVT1OvWPTQcLI5tjcsrPfs9uU9TwFMGmngIHZuPKNb4g=="
+        # self.org = "testorac"
+        # token = "FfFelQxbFycdHBx430FMZ1lB13mUtxUCau7Cu-LF-dRVT1OvWPTQcLI5tjcsrPfs9uU9TwFMGmngIHZuPKNb4g=="
+        self.org = "Orac"
+        token = "sKaPCX4BQMJPpMPJbrSCK4GZOtya4qIxFOpQSrJKnerPdq-7xFQ3XKp2bY0O6no1WzG3LOx5eDJ0aaopd8AHnA=="
 
         url = "http://influxdbv2:8086"
         client = influxdb_client.InfluxDBClient(
             url=url,
             token=token,
             org=self.org,
-            timeout=10_000)
+            timeout=60_000)
 
         self.query_api = client.query_api()
         self.bucket = "orac_bucket"
