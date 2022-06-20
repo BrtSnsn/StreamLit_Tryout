@@ -46,7 +46,7 @@ services:
     networks:
       - docker_network
     volumes:
-      - C:\docker\local_postgres/data:/var/lib/postgresql/data
+      - C:/docker/orac/postgresql:/var/lib/postgresql/data
 
   influxdbv2:
     image: influxdb:2.2.0
