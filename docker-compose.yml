@@ -45,8 +45,12 @@ services:
       - 5432:5432
     networks:
       - docker_network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
-      - C:/docker/orac/postgresql:/var/lib/postgresql/data
+      # - C:\docker\local_postgres\data:/var/lib/postgresql/data
+      - C:/docker/orac/postgres_data:/var/lib/postgresql/data
 
   influxdbv2:
     image: influxdb:2.2.0
