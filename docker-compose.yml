@@ -2,7 +2,7 @@ version: '3'
 services:
   python_main:
     container_name: python_main
-    build: ./streamlit_app
+    build: ./streamlit_main
     depends_on:
         - db
     ports:
@@ -13,7 +13,7 @@ services:
 
   python_dash:
     container_name: python_dash
-    build: ./streamlit_app2_dashboard
+    build: ./streamlit_dash
     depends_on:
         - mosquitto
     ports:
@@ -64,6 +64,24 @@ services:
     volumes:
       - C:/docker/orac/influxdbv2/data:/var/lib/influxdb2
 #      - C:/docker/orac/influxdbv2/config:/etc/influxdb2
+
+  nginx_main:
+    container_name: nginx_main
+    restart: always
+    build: ./nginx_main
+    ports:
+      - "81:81"
+    depends_on:
+      - python_main
+
+  nginx_dash:
+    container_name: nginx_dash
+    restart: always
+    build: ./nginx_dash
+    ports:
+      - "82:82"
+    depends_on:
+      - python_dash
 
 networks:
   docker_network:
