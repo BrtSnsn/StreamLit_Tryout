@@ -1,4 +1,4 @@
-from influx_db import InfluxQuery
+from files_influxdb.influx_db import InfluxQuery
 from helpers import Param
 import streamlit as st
 import plotly.express as px

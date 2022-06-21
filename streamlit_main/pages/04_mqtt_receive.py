@@ -6,11 +6,12 @@ from helpers import Mqtt as mqtt
 from helpers import Param
 
 
-# if 'receiver' not in st.session_state:
-#     st.session_state['receiver'] = 0
-# else:
-#     st.session_state['receiver'] += 1
-# st.write(st.session_state['receiver'])
+st.set_page_config(
+    page_title="MQTT receiver",
+    page_icon="🎨",
+    layout="centered",
+    initial_sidebar_state='auto'
+)
 
 # instance the classes or smth
 globs = Param()

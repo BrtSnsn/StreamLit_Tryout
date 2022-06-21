@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
-from database_files.config import db_string
-from database_files.models import Base, Bookz
+from files_postgres.config import db_string
+from files_postgres.models import Base, Bookz
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from contextlib import contextmanager
