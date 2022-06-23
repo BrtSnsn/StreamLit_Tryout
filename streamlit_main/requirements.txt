@@ -8,3 +8,5 @@ plotly
 psycopg2
 sqlalchemy
 influxdb_client
+keyboard
+opencv-python
