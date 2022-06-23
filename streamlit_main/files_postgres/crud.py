@@ -30,12 +30,12 @@ def create_database():
 
 # Example data load from tutorial
 # https://www.learndatasci.com/tutorials/using-databases-python-postgres-sqlalchemy-and-alembic/
-book = Bookz(
-    title='Deep Learning',
-    author='Ian Goodfellow',
-    pages=775,
-    published=datetime(2016, 11, 18, 12, 5, 12)
-)
+# book = Bookz(
+#     title='Deep Learning',
+#     author='Ian Goodfellow',
+#     pages=775,
+#     published=datetime(2016, 11, 18, 12, 5, 12)
+# )
 
 
 if __name__ == '__main__':
