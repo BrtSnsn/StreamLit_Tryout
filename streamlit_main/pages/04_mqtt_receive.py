@@ -4,6 +4,7 @@ from PIL import Image
 import io
 from helpers import Mqtt as mqtt
 from helpers import Param
+import base64
 
 
 st.set_page_config(
@@ -35,9 +36,8 @@ def on_message(client, userdata, message):
         rsp = ast.literal_eval(msg)
         msgbox.write(rsp['line'])
         if rsp['foto'] != str(0):
-            msgbox2.image(Image.open(io.BytesIO(rsp['foto'])))
-        msgbox3.write(rsp)
-        msgbox4.write('succes')
+            msgbox3.image(Image.open(io.BytesIO(base64.b64decode(rsp['foto']))))
+
 
     except:
         msgbox4.write('error')

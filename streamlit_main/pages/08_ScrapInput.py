@@ -1,5 +1,4 @@
 import streamlit as st
-import json
 from datetime import datetime, time, timedelta
 from helpers import Mqtt as mqtt
 from helpers import Param
@@ -10,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from contextlib import contextmanager
 import pandas as pd
+import base64
 
 st.set_page_config(
     page_title="Bert's Cool Dashboard Concept",
@@ -82,13 +82,13 @@ with st.form("my_form", clear_on_submit=True):
     foto_bytes = 0
     
     data = {
-        'date' : str(st.session_state.dateselect),
-        'time' : str(st.session_state.timeselect),
-        'line' : st.session_state.line,
-        'amount': st.session_state.amount,
-        'reason': st.session_state.reason,
-        'opmerking': st.session_state.extra,
-        'foto': str(0)
+        "date" : str(st.session_state.dateselect),
+        "time" : str(st.session_state.timeselect),
+        "line" : st.session_state.line,
+        "amount": st.session_state.amount,
+        "reason": st.session_state.reason,
+        "opmerking": st.session_state.extra,
+        "foto": str(0)
         }
 
     fotoval = st.camera_input('Take of a picture of the problem')
@@ -98,32 +98,34 @@ with st.form("my_form", clear_on_submit=True):
     # Every form must have a submit button.
     submitted = st.form_submit_button("Submit")
     if submitted:
-        t = json.loads(json.dumps(data))
+        # st.write(data)
+        # t = json.loads(json.dumps(data))
         if fotoval:
             foto_bytes = fotoval.getvalue()
             if data['foto'] == str(0):
-                t['foto'] = foto_bytes
+                # data['foto'] = foto_bytes
+                data['foto'] = base64.b64encode(foto_bytes)
 
         # st.write("slider", slider_val, "checkbox", checkbox_val)
-        line = t['line']
+        line = data['line']
         topic = Rf'SCRAP/{line}'
         if line in globs.extr_lines_be:
             now = datetime.now()
             now.strftime('%d/%m/%Y %H:%M:%S')
-            send_mqtt(topic, t)  # een foto wil hij niet altijd doorsturen (misschien iets met de json die fout loopt?)
+            send_mqtt(topic, data)  # een foto wil hij niet altijd doorsturen (misschien iets met de json die fout loopt?)
 
             timestamp = datetime.combine(
                 st.session_state.dateselect, st.session_state.timeselect
             )
             
             scrap = Scrap(
-                line=t['line'],
-                amount=t['amount'],
-                reason=t['reason'],
-                opmerking=t['opmerking'],
+                line=data['line'],
+                amount=data['amount'],
+                reason=data['reason'],
+                opmerking=data['opmerking'],
                 timestamp_scrap=timestamp,
                 timestamp_input=datetime.now(),
-                foto=t['foto'],
+                foto=data['foto'],
             )
 
             with session_scope() as s:
