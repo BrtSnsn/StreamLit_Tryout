@@ -2,7 +2,7 @@ version: '3'
 services:
   python_main:
     container_name: python_main
-    build: ./streamlit_app
+    build: ./streamlit_main
     depends_on:
         - db
     ports:
@@ -13,7 +13,7 @@ services:
 
   python_dash:
     container_name: python_dash
-    build: ./streamlit_app2_dashboard
+    build: ./streamlit_dash
     depends_on:
         - mosquitto
     ports:

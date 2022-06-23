@@ -19,6 +19,10 @@ RUN mkdir ~/.streamlit
 RUN cp .streamlit/config.toml ~/.streamlit/config.toml
 RUN cp .streamlit/credentials.toml ~/.streamlit/credentials.toml
 
+RUN apt-get update
+# needed for opencv2
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+
 ENTRYPOINT ["streamlit", "run"]
 CMD ["Orac_scrapper.py"]
 

@@ -7,7 +7,7 @@ from PIL import Image
 docker = True
 
 if not docker:
-    local_string = R"streamlit_app/"
+    local_string = R"streamlit_main/"
 else:
     local_string = ""
 

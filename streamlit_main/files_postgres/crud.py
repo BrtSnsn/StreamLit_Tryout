@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
-from database_files.config import db_string
-from database_files.models import Base, Bookz
+from files_postgres.config import db_string
+from files_postgres.models import Base, Bookz
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from contextlib import contextmanager
@@ -30,12 +30,12 @@ def create_database():
 
 # Example data load from tutorial
 # https://www.learndatasci.com/tutorials/using-databases-python-postgres-sqlalchemy-and-alembic/
-book = Bookz(
-    title='Deep Learning',
-    author='Ian Goodfellow',
-    pages=775,
-    published=datetime(2016, 11, 18, 12, 5, 12)
-)
+# book = Bookz(
+#     title='Deep Learning',
+#     author='Ian Goodfellow',
+#     pages=775,
+#     published=datetime(2016, 11, 18, 12, 5, 12)
+# )
 
 
 if __name__ == '__main__':

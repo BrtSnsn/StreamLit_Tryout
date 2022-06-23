@@ -1,21 +1,45 @@
 import streamlit as st
 import json
-import paho.mqtt.client as mqtt
 from datetime import datetime, time, timedelta
 from helpers import Mqtt as mqtt
 from helpers import Param
+from sqlalchemy import create_engine
+from files_postgres.config import db_string
+from files_postgres.models import Scrap
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime
+from contextlib import contextmanager
+import pandas as pd
 
 st.set_page_config(
     page_title="Bert's Cool Dashboard Concept",
     page_icon="🎉",
     layout="centered",
-
+    initial_sidebar_state='auto'
 )
 
 # instance the classes or smth
 globs = Param()
-page_mqtt = mqtt('form_supplier')
+client_id = datetime.now().strftime('%d/%b/%Y %H:%M:%S') + '_FormDB'
+page_mqtt = mqtt(f'{client_id}')
+st.write(f'mqtt client_id: {client_id}')
 page_mqtt.make_connection()
+
+@contextmanager
+def session_scope():
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
+# database connectie
+engine = create_engine(db_string)
+Session = sessionmaker(bind=engine)
 
 
 def send_mqtt(topic, payload):
@@ -64,7 +88,7 @@ with st.form("my_form", clear_on_submit=True):
         'amount': st.session_state.amount,
         'reason': st.session_state.reason,
         'opmerking': st.session_state.extra,
-        'foto': 0
+        'foto': str(0)
         }
 
     fotoval = st.camera_input('Take of a picture of the problem')
@@ -77,7 +101,7 @@ with st.form("my_form", clear_on_submit=True):
         t = json.loads(json.dumps(data))
         if fotoval:
             foto_bytes = fotoval.getvalue()
-            if data['foto'] == 0:
+            if data['foto'] == str(0):
                 t['foto'] = foto_bytes
 
         # st.write("slider", slider_val, "checkbox", checkbox_val)
@@ -86,5 +110,39 @@ with st.form("my_form", clear_on_submit=True):
         if line in globs.extr_lines_be:
             now = datetime.now()
             now.strftime('%d/%m/%Y %H:%M:%S')
-            send_mqtt(topic, t)
+            send_mqtt(topic, t)  # een foto wil hij niet altijd doorsturen (misschien iets met de json die fout loopt?)
+
+            timestamp = datetime.combine(
+                st.session_state.dateselect, st.session_state.timeselect
+            )
+            
+            scrap = Scrap(
+                line=t['line'],
+                amount=t['amount'],
+                reason=t['reason'],
+                opmerking=t['opmerking'],
+                timestamp_scrap=timestamp,
+                timestamp_input=datetime.now(),
+                foto=t['foto'],
+            )
+
+            with session_scope() as s:
+                s.add(scrap)
+                s.commit()
+
+lookback_window = datetime.now() - timedelta(hours=8)
+
+with st.expander("Previous inputs - last 10min"):
+    refresh = st.button('press to refresh')
+    try:            
+        if refresh:
+            with session_scope() as s:
+                qry = s.query(Scrap).filter(Scrap.timestamp_input > lookback_window)
+                a = pd.read_sql(qry.statement, con=engine)
+                st.dataframe(a)
+                # st.write(pd.read_sql_query('select * from orac_scrap_be', con=engine))  # other method
+                # filtersel = s.query(Scrap).filter(Scrap.timestamp > lookback_window).all()  # other method
+
+    except Exception:
+        pass
 

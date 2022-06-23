@@ -3,16 +3,16 @@ from sqlalchemy import Column, Integer, String, DateTime, Text
 
 Base = declarative_base()
 
-class Bookz(Base):
-    __tablename__ = 'books'
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
-    author = Column(String)
-    pages = Column(Integer)
-    published = Column(DateTime)
+# class Bookz(Base):
+#     __tablename__ = 'books'
+#     id = Column(Integer, primary_key=True)
+#     title = Column(String)
+#     author = Column(String)
+#     pages = Column(Integer)
+#     published = Column(DateTime)
     
-    def __repr__(self):
-        return f"<Book(title='{self.title}', author='{self.author}', pages={self.pages}, published={self.published}, {self.id})>"
+#     def __repr__(self):
+#         return f"<Book(title='{self.title}', author='{self.author}', pages={self.pages}, published={self.published}, {self.id})>"
 
 class Scrap(Base):
     __tablename__ = 'orac_scrap_be'

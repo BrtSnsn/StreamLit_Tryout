@@ -1,5 +1,5 @@
 # To make this work in docker
-1. In `streamlit_app\database_files\crud.py` : 
+1. In `streamlit_app\files_postgres\crud.py` : 
     ```python
     db_host = 'db'
     ```

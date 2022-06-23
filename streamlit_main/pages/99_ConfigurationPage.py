@@ -4,8 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime, timedelta
 import pandas as pd
 
-import database_files.crud as dbcrud
-import database_files.models as dbmodels
+import files_postgres.crud as dbcrud
+import files_postgres.models as dbmodels
 
 
 Session = sessionmaker(bind=dbcrud.engine)
