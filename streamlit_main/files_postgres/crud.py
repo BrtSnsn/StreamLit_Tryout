@@ -1,8 +1,7 @@
 from sqlalchemy import create_engine
 from files_postgres.config import db_string
-from files_postgres.models import Base, Bookz
+from files_postgres.models import Base
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime
 from contextlib import contextmanager
 
 @contextmanager
