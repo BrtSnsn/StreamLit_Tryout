@@ -1,56 +1,56 @@
 version: '3'
 services:
-  python_main:
-    container_name: python_main
-    build: ./streamlit_main
-    depends_on:
-        - db
-    ports:
-      # - 80:80
-      - 8501:8501
-    networks:
-      - docker_network
+  # python_main:
+  #   container_name: python_main
+  #   build: ./streamlit_main
+  #   depends_on:
+  #       - db
+  #   ports:
+  #     # - 80:80
+  #     - 8501:8501
+  #   networks:
+  #     - docker_network
 
-  python_dash:
-    container_name: python_dash
-    build: ./streamlit_dash
-    depends_on:
-        - mosquitto
-    ports:
-      # - 80:80
-      - 8502:8502
-    networks:
-      - docker_network
+  # python_dash:
+  #   container_name: python_dash
+  #   build: ./streamlit_dash
+  #   depends_on:
+  #       - mosquitto
+  #   ports:
+  #     # - 80:80
+  #     - 8502:8502
+  #   networks:
+  #     - docker_network
 
-  mosquitto:
-    image: eclipse-mosquitto:latest
-    container_name: mosquitto_mqttbroker
-    environment:
-      - TZ=Europe/Paris
-    ports:
-      - 1883:1883
-      - 8883:8883
-    networks:
-      - docker_network
-    volumes:
-      - C:/docker/orac/mosquitto/mosquitto-data:/mosquitto/data
-      - C:/docker/orac/mosquitto/mosquitto-logs:/mosquitto/logs
-      - C:/docker/orac/mosquitto/mosquitto-conf:/mosquitto/config
-    restart: unless-stopped
+  # mosquitto:
+  #   image: eclipse-mosquitto:latest
+  #   container_name: mosquitto_mqttbroker
+  #   environment:
+  #     - TZ=Europe/Paris
+  #   ports:
+  #     - 1883:1883
+  #     - 8883:8883
+  #   networks:
+  #     - docker_network
+  #   volumes:
+  #     - C:/docker/orac/mosquitto/mosquitto-data:/mosquitto/data
+  #     - C:/docker/orac/mosquitto/mosquitto-logs:/mosquitto/logs
+  #     - C:/docker/orac/mosquitto/mosquitto-conf:/mosquitto/config
+  #   restart: unless-stopped
 
-  db:
-    container_name: postgres_db_
-    build: ./database
-    ports:
-      - 5432:5432
-    networks:
-      - docker_network
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      # - C:\docker\local_postgres\data:/var/lib/postgresql/data
-      - C:/docker/orac/postgres_data:/var/lib/postgresql/data
+  # db:
+  #   container_name: postgres_db_
+  #   build: ./database
+  #   ports:
+  #     - 5432:5432
+  #   networks:
+  #     - docker_network
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #   volumes:
+  #     # - C:\docker\local_postgres\data:/var/lib/postgresql/data
+  #     - C:/docker/orac/postgres_data:/var/lib/postgresql/data
 
   influxdbv2:
     image: influxdb:2.2.0
@@ -64,6 +64,14 @@ services:
     volumes:
       - C:/docker/orac/influxdbv2/data:/var/lib/influxdb2
 #      - C:/docker/orac/influxdbv2/config:/etc/influxdb2
+
+# https://grafana.com/docs/grafana/next/setup-grafana/configure-docker/
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - C:/docker/orac/grafana/data:/var/lib/grafana
+      - C:/docker/orac/grafana/config:/etc/grafana
 
 networks:
   docker_network:
