@@ -2,8 +2,8 @@ import ast
 import streamlit as st
 from PIL import Image
 import io
-from helpers import Mqtt as mqtt
-from helpers import Param
+from scripts.helpers import Mqtt as mqtt
+from scripts.helpers import Param
 import base64
 
 
