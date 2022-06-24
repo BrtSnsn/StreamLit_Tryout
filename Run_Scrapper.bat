@@ -1,1 +1,0 @@
-python -m streamlit run .\streamlit_main\Orac_scrapper.py --runner.magicEnabled FALSE

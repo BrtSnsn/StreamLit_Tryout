@@ -1,0 +1,1 @@
+python -m streamlit run .\streamlit_dash\OracDashboard_BE.py --runner.magicEnabled FALSE

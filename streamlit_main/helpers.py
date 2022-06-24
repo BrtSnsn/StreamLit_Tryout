@@ -3,8 +3,8 @@ from collections import OrderedDict
 import paho.mqtt.client as mqtt
 from PIL import Image
 
-# docker = False
-docker = True
+docker = False
+# docker = True
 
 if not docker:
     local_string = R"streamlit_main/"

@@ -3,11 +3,11 @@ from collections import OrderedDict
 import paho.mqtt.client as mqtt
 from PIL import Image
 
-# docker = False
-docker = True
+docker = False
+# docker = True
 
 if not docker:
-    local_string = R"streamlit_app2_dashboard/"
+    local_string = R"streamlit_dash/"
 else:
     local_string = ""
 
@@ -24,6 +24,7 @@ class Param():
 
         self.bg = Rf"{local_string}Icons/background.png"
         self.quick = Rf"{local_string}Icons/Quickness.png"
+        self.logopath = Rf"{local_string}Icons/getsitelogo.png"
 
         self.status_text = {
             '0': '_',
