@@ -191,7 +191,7 @@ def call_sparkline(client, userdata, message):
 
 
     ax.grid(b=True, which='major', color='k', linestyle='--', lw=1.5, alpha=0.5)
-    fig.gca().yaxis.set_major_locator(MaxNLocator(nbins=4, steps=[2], integer=True))  # zet tick marks
+    fig.gca().yaxis.set_major_locator(MaxNLocator(nbins=4, steps=[2, 4], integer=True))  # zet tick marks
 
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
