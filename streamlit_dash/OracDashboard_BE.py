@@ -1,12 +1,14 @@
 import re
 import streamlit as st
-from helpers import Mqtt as mqtt
-from helpers import Param
+from scripts.helpers import Mqtt as mqtt
+from scripts.helpers import Param
 import pandas as pd
 import matplotlib.pyplot as plt
 import ast
 from datetime import datetime
 import base64
+from matplotlib.ticker import MaxNLocator
+import scripts.Process_Capability_Potential as PCP
 
 
 st.set_page_config(
@@ -37,6 +39,7 @@ line_dict_2 = {}
 # status dicts
 mstatus_dict = {}
 pstatus_dict = {}
+status_dict = {}
 
 # global data
 status_dict_text = dict(globs.status_text)
@@ -153,7 +156,7 @@ for slot, each in enumerate(globs.extr_lines_be):
 
     """ Initiate the graphs and fill them with blanks """
     sparkline = pd.DataFrame([], columns=[each])
-    fig, ax = plt.subplots(figsize=(1,1), dpi=80)
+    fig, ax = plt.subplots()
     
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -162,7 +165,7 @@ for slot, each in enumerate(globs.extr_lines_be):
     ax.plot(sparkline)
 
     # mstatus_dict[each].write('_')
-    image_path = globs.quick
+    image_path = globs.logopath
     mstatus_icon_dict[each].markdown(image_gen(image_path, 50), unsafe_allow_html=True)
     graph_dict[each].pyplot(fig, transparent=True)
     plt.close(fig)
@@ -182,13 +185,34 @@ def call_sparkline(client, userdata, message):
     result = [n for n in x]
 
     sparkline = pd.DataFrame(result, columns=['_'])
-    fig, ax = plt.subplots(figsize=(4,4), dpi=80)
-    
+    plt.rcParams.update({'font.size': 36})
+    fig, ax = plt.subplots()
+    ax.set_title('TakeOff%',fontsize=20)
+
+
+    ax.grid(b=True, which='major', color='k', linestyle='--', lw=1.5, alpha=0.5)
+    fig.gca().yaxis.set_major_locator(MaxNLocator(nbins=4, steps=[2, 4], integer=True))  # zet tick marks
+
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
     ax.get_xaxis().set_visible(False)
+
     ax.plot(sparkline, 'o-', linewidth=2, markersize=5)
+
+    # SPC block I-mR graph
+    try:
+        if status_dict[linemessage] in ['Production']:
+            stdev = PCP.c_sigma(result)
+            mean = PCP.average(result)
+            upper = mean + 3 * stdev
+            lower = mean - 3 * stdev
+            ax.axhline(upper, color='red', linewidth=2)
+            ax.axhline(lower, color='red', linewidth=2)
+    except:
+        pass
+
+    # SPARK: [9.259772300720215, 9.651583671569824, 9.649709701538086, 9.717808723449707, 9.794402122497559, 9.955592155456543, 9.847145080566406, 9.881819725036621, 10.097850799560547, 9.824301719665527, 9.756647109985352, 9.749255180358887, 9.753482818603516, 10.388359069824219, 10.628576278686523, 9.849626541137695, 10.222018241882324, 10.212464332580566, 9.976933479309082, 10.142073631286621, 10.140016555786133, 9.782431602478027, 9.650010108947754, 9.926274299621582, 9.764305114746094, 10.128897666931152, 10.186637878417969, 10.192399024963379, 9.901869773864746, 10.493439674377441, 10.504477500915527, 10.207671165466309, 10.159010887145996, 10.402300834655762, 9.983882904052734, 10.229571342468262, 10.578360557556152, 10.578360557556152, 10.215231895446777, 10.415071487426758, 10.337342262268066, 10.912957191467285, 11.127264022827148, 10.911093711853027, 10.85727310180664, 11.097021102905273, 10.896879196166992, 10.898609161376953, 11.629395484924316, 11.144103050231934]
     
     graph_dict[linemessage].pyplot(fig, transparent=True)  # dit gebruiken liefst
     plt.close(fig)  # anders warning over memory
@@ -262,6 +286,7 @@ def full_status(line):
             status = pstatus = mstatus
         
         send_mqtt_status(status, line=line)
+        status_dict[line] = status_dict_text[status]
         mstatus_icon_dict[line].markdown(status_dict_text[status])
         # mstatus_icon_dict[linemessage].markdown(image_gen(logo_image_path, 50), unsafe_allow_html=True)
 

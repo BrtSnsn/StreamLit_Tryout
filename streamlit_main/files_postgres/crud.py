@@ -1,9 +1,14 @@
 from sqlalchemy import create_engine
 from files_postgres.config import db_string
-from files_postgres.models import Base, Bookz
+from files_postgres.models import Base
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime
 from contextlib import contextmanager
+
+# informatie
+# https://launchschool.com/books/sql_first_edition/read/multi_tables
+
+# ont to one relationship sqlaclhemy
+# https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#one-to-one
 
 @contextmanager
 def session_scope():

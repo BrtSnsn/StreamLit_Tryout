@@ -1,8 +1,8 @@
 from sqlalchemy import false
 import streamlit as st
 from datetime import datetime
-from helpers import Param
-from helpers import Mqtt as mqtt
+from scripts.helpers import Param
+from scripts.helpers import Mqtt as mqtt
 import numpy as np
 import cv2
 
@@ -22,6 +22,8 @@ st.sidebar.write(st.session_state)
 
 wissel_chck = st.checkbox('Wissel?')
 
+c1, c2 = st.columns([4, 1])
+
 die = False
 status = False
 line = False
@@ -37,25 +39,33 @@ def imageprocess(val):
 if wissel_chck:
     line_data = False
     die_data = False
+    shopfloor_data = False
 
-    linecam = st.camera_input('line')
+    linecam = c2.camera_input('line')
     if linecam:
         line_data = imageprocess(linecam)
 
     if line_data:
-        diecam = st.camera_input('die')
+        diecam = c2.camera_input('die')
         if diecam:
             die_data = imageprocess(diecam)
 
-    with st.form("standard", clear_on_submit=True):
+    if die_data:
+        shopflcam = c2.camera_input('shopfloor')
+        if shopflcam:
+            shopfloor_data = imageprocess(shopflcam)
+
+    with c1.form("standard", clear_on_submit=True):
         st.header('WISSEL UPDATE @ EXTRUSIE BE')
         status = st.radio('selecteer', ['_', 'Wissel Opbouw', 'Wissel Afbouw'], horizontal=True)
 
         st.write(line_data)
         st.write(die_data)
+        st.write(shopfloor_data)
 
         line = line_data
         die = die_data
+        SAP = shopfloor_data
 
         submitted = st.form_submit_button("Submit")
 else:
