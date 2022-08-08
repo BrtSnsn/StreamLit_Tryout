@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 pic_bert.py
+
+*crt
+*key
